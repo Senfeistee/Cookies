@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooking Mama: Magic Kitchen (3 Schwierigkeitsgrade)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Mali:wght@600;700&display=swap');
+
+    :root {
+      --mama-pink: #ff5e84;
+      --mama-pink-dark: #d93d62;
+      --mama-yellow: #ffde59;
+      --mama-yellow-dark: #e5be27;
+      --mama-blue: #4dc9f6;
+      --mama-green: #7ed957;
+      --mama-green-dark: #5cb835;
+      --mama-orange: #ff914d;
+      --mama-red: #ff6b6b;
+      --text-dark: #4a2c2a;
+      --paper-cream: #fbf5e6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', 'Mali', cursive, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #ffe6eb;
+      background-image: 
+        linear-gradient(45deg, #ffd1dc 25%, transparent 25%), 
+        linear-gradient(-45deg, #ffd1dc 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ffd1dc 75%), 
+        linear-gradient(-45deg, transparent 75%, #ffd1dc 75%);
+      background-size: 36px 36px;
+      background-position: 0 0, 0 18px, 18px -18px, -18px 0px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      color: var(--text-dark);
+    }
+
+    .ds-casing {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border: 6px solid var(--mama-pink);
+      border-radius: 36px;
+      box-shadow: 0 14px 0 var(--mama-pink-dark), 0 25px 35px rgba(0,0,0,0.25);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      position: relative;
+    }
+
+    /* OBERER BILDSCHIRM */
+    .top-screen {
+      background: #fffdf5;
+      border: 4px solid var(--text-dark);
+      border-radius: 20px;
+      padding: 1rem;
+      box-shadow: inset 0 3px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+    }
+
+    .top-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-pill {
+      background: var(--mama-yellow);
+      border: 2px solid var(--text-dark);
+      padding: 0.25rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transform: rotate(-1.5deg);
+    }
+
+    .timer-badge {
+      background: #eef8ff;
+      border: 2px solid var(--mama-blue);
+      color: #0284c7;
+      padding: 0.25rem 0.8rem;
+      border-radius: 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .timer-badge.warning {
+      background: #fff1f2;
+      border-color: var(--mama-red);
+      color: var(--mama-red);
+      animation: blink 0.5s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.5; }
+    }
+
+    .mama-dialog {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #fff3f6;
+      border: 3px solid #ffccd5;
+      border-radius: 16px;
+      padding: 0.6rem 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mama-face {
+      font-size: 2.3rem;
+      min-width: 52px;
+      height: 52px;
+      background: white;
+      border: 2px solid var(--text-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 var(--text-dark);
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .mama-face.angry {
+      animation: shakeFace 0.25s infinite;
+      background: #fee2e2;
+    }
+
+    @keyframes shakeFace {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-8deg); }
+      75% { transform: rotate(8deg); }
+    }
+
+    .mama-text-wrap {
+      flex: 1;
+    }
+
+    .mama-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mama-pink-dark);
+      text-transform: uppercase;
+    }
+
+    .mama-msg {
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .back-recipe-btn {
+      display: inline-block;
+      background: var(--mama-yellow);
+      color: var(--text-dark);
+      text-decoration: none;
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      border: 2px solid var(--text-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 3px 0 var(--text-dark);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .back-recipe-btn:hover {
+      background: var(--mama-yellow-dark);
+    }
+
+    .back-recipe-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--text-dark);
+    }
+
+    .ds-hinge {
+      height: 8px;
+      background: #ffd6df;
+      border-radius: 4px;
+    }
+
+    /* UNTERER BILDSCHIRM */
+    .touch-screen {
+      background: #fdfbf7;
+      border: 5px solid var(--text-dark);
+      border-radius: 24px;
+      min-height: 420px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 5px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* POPUP ANKÜNDIGUNG VOR JEDEM SCHRITT */
+    .instruction-card {
+      background: white;
+      border: 4px solid var(--text-dark);
+      border-radius: 24px;
+      padding: 1.4rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.15);
+      animation: cardPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 320px;
+      width: 90%;
+      z-index: 50;
+    }
+
+    @keyframes cardPop {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .instruction-icon {
+      font-size: 3.2rem;
+      margin-bottom: 0.4rem;
+      filter: drop-shadow(0 3px 0 rgba(0,0,0,0.1));
+    }
+
+    .instruction-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--mama-pink-dark);
+      margin-bottom: 0.3rem;
+    }
+
+    .instruction-desc {
+      font-size: 0.93rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-dark);
+      margin-bottom: 1.2rem;
+    }
+
+    /* SCHRITT 1A: SCHNEIDEBRETT */
+    .cutting-board {
+      width: 100%;
+      max-width: 340px;
+      height: 220px;
+      background: #f6d7b0;
+      border: 5px solid #8d6e63;
+      border-radius: 20px;
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.15), 0 5px 0 #6d4c41;
+      position: relative;
+      margin: 0.4rem 0;
+      overflow: hidden;
+    }
+
+    .bud-piece {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 3px solid var(--text-dark);
+      border-radius: 50%;
+      background: #e6f9ed;
+      box-shadow: 0 4px 0 var(--text-dark);
+      transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .bud-piece:active { transform: scale(0.85); }
+    .piece-big { width: 105px; height: 105px; font-size: 3.6rem; }
+    .piece-medium { width: 68px; height: 68px; font-size: 2rem; background: #d1fae5; }
+    .piece-small { width: 46px; height: 46px; font-size: 1.3rem; background: #a7f3d0; border-color: #065f46; }
+    .piece-dust { width: 34px; height: 34px; font-size: 1rem; background: #fee2e2; border-color: #991b1b; }
+
+    /* SCHRITT 1B: BLECH BELEGEN */
+    .tray-grid {
+      width: 100%;
+      max-width: 330px;
+      height: 190px;
+      background: var(--paper-cream);
+      border: 4px solid #8d6e63;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 8px;
+      padding: 8px;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+      margin: 0.4rem 0;
+    }
+
+    .tray-slot {
+      background: rgba(255,255,255,0.7);
+      border: 2px dashed #bcaaa4;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tray-slot.filled { background: #e2f7e8; border: 2px solid var(--mama-green-dark); cursor: default; }
+    .tray-slot.clumped { background: #ffebee; border: 2px solid var(--mama-red); }
+
+    /* SCHRITT 2A & 2B: REGLER & DECARB-OFEN */
+    .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; margin: 0.6rem 0; }
+    .temp-display { background: #1e293b; color: #38bdf8; font-size: 2.1rem; font-weight: 700; padding: 0.3rem 1.5rem; border-radius: 16px; border: 3px solid var(--text-dark); }
+    .dial-knob { width: 120px; height: 120px; background: #f1f5f9; border: 5px solid var(--text-dark); border-radius: 50%; position: relative; box-shadow: 0 7px 0 var(--text-dark); display: flex; align-items: center; justify-content: center; }
+    .dial-notch { position: absolute; top: 8px; width: 10px; height: 20px; background: var(--mama-pink); border-radius: 4px; border: 2px solid var(--text-dark); }
+    .dial-buttons { display: flex; gap: 1.5rem; }
+    .btn-step { background: var(--mama-yellow); border: 3px solid var(--text-dark); border-radius: 50%; width: 48px; height: 48px; font-size: 1.6rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 0 var(--text-dark); display: flex; align-items: center; justify-content: center; }
+    .btn-step:active { transform: translateY(4px); box-shadow: 0 0 0; }
+
+    .oven-stage-container {
+      width: 100%;
+      max-width: 310px;
+      height: 240px;
+      background: #1e130c;
+      border: 5px solid #452c23;
+      border-radius: 18px;
+      box-shadow: inset 0 0 35px rgba(255, 120, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: none;
+    }
+    .draggable-tray { width: 240px; height: 100px; background: var(--paper-cream); border: 4px solid #6d4c41; border-radius: 12px; position: absolute; top: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.6); cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .tray-handle { width: 85px; height: 10px; background: #8d6e63; border: 2px solid var(--text-dark); border-radius: 6px; margin-bottom: 5px; }
+
+    /* SCHRITT 3: WASSERBAD */
+    .pot-assembly { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0.3rem 0; }
+    .steam-container { position: absolute; top: -20px; display: flex; gap: 1.2rem; pointer-events: none; z-index: 10; }
+    .steam-puff { font-size: 1.3rem; opacity: 0; animation: riseSteam 1.8s infinite ease-out; }
+    .steam-puff:nth-child(2) { animation-delay: 0.6s; }
+    .steam-puff:nth-child(3) { animation-delay: 1.2s; }
+    @keyframes riseSteam { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 50% { opacity: 0.7; } 100% { transform: translateY(-24px) scale(1.2); opacity: 0; } }
+
+    .outer-pot {
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #94a3b8, #334155 75%);
+      border: 6px solid #1e293b;
+      box-shadow: 0 8px 0 #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      touch-action: none;
+      cursor: grab;
+    }
+    .outer-pot::before, .outer-pot::after { content: ''; position: absolute; width: 22px; height: 42px; background: #1e293b; border-radius: 6px; top: 50%; transform: translateY(-50%); border: 3px solid var(--text-dark); z-index: -1; }
+    .outer-pot::before { left: -18px; }
+    .outer-pot::after { right: -18px; }
+
+    .inner-bowl { width: 165px; height: 165px; border-radius: 50%; background: #fef08a; border: 5px solid #475569; box-shadow: inset 0 5px 12px rgba(0,0,0,0.55); position: relative; overflow: hidden; transition: box-shadow 0.25s ease; }
+    .inner-bowl.active-good { box-shadow: inset 0 0 16px rgba(126, 217, 87, 0.8), 0 0 15px rgba(126, 217, 87, 0.6); border-color: #22c55e; }
+    .herb-swirl { position: absolute; inset: 0; border-radius: 50%; background-image: radial-gradient(#1e3a17 2.5px, transparent 2.5px), radial-gradient(#2d5a27 3.5px, transparent 3.5px); background-size: 24px 24px, 36px 36px; animation: spinLiquid 2.5s linear infinite; animation-play-state: paused; }
+    @keyframes spinLiquid { from { transform: rotate(0deg); } to { rotate(360deg); } }
+    .spoon-indicator { position: absolute; width: 30px; height: 30px; background: #f8fafc; border: 3px solid var(--text-dark); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 5; }
+
+    /* SCHRITT 4: SEIHTUCH */
+    .filter-rig { position: relative; width: 240px; height: 240px; display: flex; flex-direction: column; align-items: center; touch-action: none; }
+    .glass-jar { position: absolute; bottom: 0; width: 135px; height: 105px; background: rgba(255, 255, 255, 0.65); border: 5px solid #64748b; border-top: 2px solid #94a3b8; border-radius: 12px 12px 26px 26px; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.9), 0 6px 0 #475569; overflow: hidden; display: flex; align-items: flex-end; }
+    .jar-fill { width: 100%; height: 0%; background: linear-gradient(180deg, #bef264 0%, #4d7c0f 100%); transition: height 0.15s ease-out; }
+    .cloth-pouch { position: absolute; top: 10px; width: 105px; height: 110px; background: #f8fafc; border: 4px solid var(--text-dark); border-radius: 40% 40% 50% 50%; box-shadow: inset 0 -12px 18px rgba(77, 124, 15, 0.45); cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
+    .cloth-pouch.ripped { background: #451a03 !important; border-color: var(--mama-red) !important; animation: pouchBurst 0.3s ease-out forwards; }
+    @keyframes pouchBurst { 50% { transform: scale(1.2) rotate(-8deg); } 100% { transform: scale(1) rotate(0deg); opacity: 0.7; } }
+    .butter-drop { position: absolute; width: 14px; height: 18px; background: #84cc16; border: 2px solid #365314; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; pointer-events: none; z-index: 4; animation: dropFall 0.45s forwards linear; }
+    @keyframes dropFall { 0% { top: 115px; opacity: 1; } 100% { top: 175px; opacity: 0; transform: scale(1.3); } }
+
+    /* SCHRITT 5 & 6: COOKIE-TEIG */
+    .dock-container { display: flex; justify-content: center; gap: 0.5rem; width: 100%; min-height: 72px; z-index: 20; }
+    .drag-card { width: 68px; height: 68px; background: white; border: 3px solid var(--text-dark); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: grab; box-shadow: 0 4px 0 var(--text-dark); touch-action: none; }
+    .drag-card:active { cursor: grabbing; box-shadow: 0 1px 0 var(--text-dark); }
+    .drag-card.used { display: none; }
+
+    .mixing-bowl { width: 200px; height: 200px; border-radius: 50%; background: #ffffff; border: 8px solid #3b82f6; box-shadow: 0 8px 0 #1d4ed8, inset 0 8px 16px rgba(0,0,0,0.15); position: relative; display: flex; align-items: center; justify-content: center; margin: 0.3rem 0; }
+    .mixing-bowl.dry-mode { border-color: #f97316; box-shadow: 0 8px 0 #c2410c, inset 0 8px 16px rgba(0,0,0,0.15); }
+    .mixing-bowl.drag-over { border-color: var(--mama-green) !important; transform: scale(1.03); }
+    .bowl-liquid-inside { width: 160px; height: 160px; border-radius: 50%; background: #f1f5f9; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .rim-button { position: absolute; top: -12px; width: 84px; height: 22px; background: var(--mama-yellow); border: 3px dashed var(--text-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; z-index: 15; }
+
+    /* SCHRITT 7: KUGELN FORMEN */
+    .cookie-sheet { width: 100%; max-width: 340px; height: 220px; background: #94a3b8; border: 5px solid #475569; border-radius: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .cookie-sheet-paper { width: 100%; height: 100%; background: var(--paper-cream); border: 3px dashed #d6d3d1; border-radius: 10px; position: relative; overflow: hidden; }
+    .ball-spot { position: absolute; width: 62px; height: 62px; border: 3px dashed #a8a29e; border-radius: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+    .ball-spot.highlight { border-color: var(--mama-green); background: rgba(126, 217, 87, 0.2); }
+    .dough-sphere { width: 56px; height: 56px; background: radial-gradient(circle at 35% 35%, #fed7aa, #d97706 70%, #9a3412 100%); border: 3px solid var(--text-dark); border-radius: 50%; box-shadow: 0 5px 0 rgba(0,0,0,0.25); position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .dough-sphere.flattened { transform: scale(1.3, 0.7) !important; border-color: var(--mama-red) !important; }
+    .chunk-bit { position: absolute; width: 13px; height: 13px; background: #271510; border-radius: 50% 50% 50% 15%; transform: rotate(45deg); box-shadow: 0 2px 2px rgba(0,0,0,0.4); pointer-events: none; }
+
+    /* SCHRITT 8: FINALE BACKOFEN & ABKÜHLEN */
+    .oven-bake-box { width: 100%; max-width: 330px; height: 235px; background: radial-gradient(circle at 50% 70%, #7c2d12, #1c1917 80%); border: 6px solid #451a03; border-radius: 18px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; touch-action: none; }
+    .sliding-cookie-tray { width: 275px; height: 135px; background: var(--paper-cream); border: 4px solid #78350f; border-radius: 12px; position: absolute; top: 25px; cursor: grab; box-shadow: 0 10px 20px rgba(0,0,0,0.75); display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 6px; }
+    .sliding-cookie-tray:active { cursor: grabbing; }
+    .cookies-tray-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; justify-items: center; }
+    
+    .bake-cookie-mini {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fde047 30%, #d97706 80%);
+      border: 2px solid #b45309;
+      position: relative;
+      transition: all 0.2s ease-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .bake-cookie-mini .c-drop, .cookie-moveable .c-drop {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      background: #271510;
+      border-radius: 50% 50% 50% 15%;
+      transform: rotate(45deg);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+    .c-drop.d1 { top: 7px; left: 8px; }
+    .c-drop.d2 { top: 11px; right: 7px; }
+    .c-drop.d3 { bottom: 7px; left: 17px; }
+
+    .hot-cooling-pan {
+      width: 100%;
+      height: 125px;
+      background: #e7e5e4;
+      border: 4px solid #78716c;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 6px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .cooling-wire-rack {
+      width: 100%;
+      height: 125px;
+      background: repeating-linear-gradient(0deg, transparent, transparent 10px, #64748b 10px, #64748b 12px),
+                  repeating-linear-gradient(90deg, #cbd5e1, #cbd5e1 14px, #475569 14px, #475569 16px);
+      border: 4px solid #334155;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 6px;
+      position: relative;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .cookie-moveable {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fed7aa 35%, #b45309 85%);
+      border: 2px solid #78350f;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      cursor: grab;
+      touch-action: none;
+      position: relative;
+    }
+
+    .cookie-moveable:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+
+    .cookie-moveable.broken {
+      transform: scale(1.3, 0.4) rotate(15deg) !important;
+      background: #78350f !important;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ALLGEMEINE BALKEN */
+    .generic-meter { width: 85%; max-width: 310px; height: 22px; background: #e2e8f0; border: 3px solid var(--text-dark); border-radius: 20px; position: relative; overflow: hidden; margin-top: 0.3rem; }
+    .meter-zone-target { position: absolute; left: 65%; width: 22%; top: 0; bottom: 0; background: rgba(126, 217, 87, 0.55); border-left: 2px dashed #15803d; border-right: 2px dashed #15803d; z-index: 5; }
+    .meter-bar-fill { height: 100%; width: 0%; background: var(--mama-yellow); transition: width 0.08s ease-out; }
+
+    /* POP RATING & BUTTONS */
+    .pop-rating { position: absolute; top: 35%; font-size: 1.6rem; font-weight: 700; padding: 0.5rem 1.4rem; border-radius: 50px; border: 3px solid var(--text-dark); z-index: 60; box-shadow: 0 6px 0 rgba(0,0,0,0.2); transform: scale(0); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .pop-rating.show { transform: scale(1) rotate(-3deg); }
+    .pop-perfect { background: var(--mama-yellow); color: var(--text-dark); }
+    .pop-good { background: var(--mama-blue); color: white; }
+    .pop-bad { background: var(--mama-red); color: white; }
+
+    .btn-mama {
+      background: var(--mama-pink);
+      color: white;
+      border: 3px solid var(--text-dark);
+      border-radius: 50px;
+      padding: 0.65rem 1.7rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--text-dark);
+      transition: all 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-mama:active { transform: translateY(5px); box-shadow: 0 0 0; }
+    .btn-green { background: var(--mama-green); }
+    .btn-blue { background: var(--mama-blue); }
+    .btn-orange { background: var(--mama-orange); }
+
+    .hint-arrow-bounce {
+      position: absolute;
+      bottom: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--mama-yellow);
+      text-shadow: 1px 1px 2px #000;
+      animation: bounceDown 0.8s infinite;
+      pointer-events: none;
+    }
+    @keyframes bounceDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+    /* RANG-ANZEIGE ENDBILDSCHIRM */
+    .rank-badge {
+      font-size: 3.5rem;
+      font-weight: 900;
+      padding: 0.3rem 1.8rem;
+      border-radius: 30px;
+      border: 5px solid var(--text-dark);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+      margin: 0.4rem 0;
+      transform: rotate(-3deg);
+      letter-spacing: 0.05em;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+      animation: rankPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes rankPop {
+      0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+      80% { transform: scale(1.15) rotate(3deg); }
+      100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+    }
+
+    .rank-splusplus { background: linear-gradient(135deg, #ffd700, #ff007f, #00f0ff); color: white; border-color: #fff; box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); }
+    .rank-splus { background: #ffd700; color: #4a2c2a; }
+    .rank-s { background: #fde047; color: #4a2c2a; }
+    .rank-a { background: #4ade80; color: white; }
+    .rank-b { background: #38bdf8; color: white; }
+    .rank-c { background: #fb923c; color: white; }
+    .rank-d { background: #f87171; color: white; }
+    .rank-f { background: #64748b; color: white; }
+
+    /* MODUS-AUSWAHL */
+    .mode-select-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 90%;
+      max-width: 320px;
+      z-index: 50;
+      align-items: center;
+    }
+    .btn-mode {
+      width: 100%;
+      justify-content: center;
+      padding: 0.8rem 1rem;
+      font-size: 1.15rem;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ds-casing">
+
+    <!-- TOP SCREEN -->
+    <div class="top-screen">
+      <div class="top-header-row">
+        <div class="step-pill" id="stepPill">COOKING MAMA</div>
+        <div class="timer-badge" id="timerBadge">⏱️ --s</div>
+      </div>
+      <div class="mama-dialog">
+        <div class="mama-face" id="mamaFace">👩‍🍳</div>
+        <div class="mama-text-wrap">
+          <div class="mama-title" id="mamaRole">Cooking Mama</div>
+          <div class="mama-msg" id="mamaSpeech">"Willkommen in der Magic Kitchen! Wähle deinen Modus!"</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 0.1rem;">
+        <a href="Cookies.html" class="back-recipe-btn">📖 Zum Cookie- & Dosis-Rechner</a>
+      </div>
+    </div>
+
+    <!-- SCHARNIER -->
+    <div class="ds-hinge"></div>
+
+    <!-- TOUCH SCREEN -->
+    <div class="touch-screen" id="touchScreen">
+      <!-- Dynamischer Spielinhalt -->
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const touchScreen = document.getElementById('touchScreen');
+      const timerBadge = document.getElementById('timerBadge');
+      const mamaFace = document.getElementById('mamaFace');
+      const mamaSpeech = document.getElementById('mamaSpeech');
+      const stepPill = document.getElementById('stepPill');
+
+      let activeTimer = null;
+      let activeLoop = null;
+
+      // SCHWIERIGKEITSGRADE-EINSTELLUNGEN
+      let currentMode = 'normal'; // 'easy', 'normal', 'hard'
+
+      const modeConfigs = {
+        easy: {
+          name: 'LEICHT',
+          pillColor: 'var(--mama-green)',
+          t1A: 14,
+          t1B: 12,
+          t2A: 10,
+          bakeLoop2B: 65, // ms pro Tick (langsamer)
+          t3: 18,
+          stirSpeedBonus: 1.2,
+          t4: 18,
+          pressSpeedBonus: 1.2,
+          t5: 18,
+          whiskSpeedBonus: 1.2,
+          t6: 18,
+          t7A: 18,
+          t7B: 35, // Sehr viel Zeit für Chunks
+          bakeLoop8A: 65,
+          t8B_rest: 2,
+          t8B_move: 12,
+          penaltyFactor: 0.5
+        },
+        normal: {
+          name: 'NORMAL',
+          pillColor: 'var(--mama-yellow)',
+          t1A: 6,
+          t1B: 5,
+          t2A: 5,
+          bakeLoop2B: 32,
+          t3: 9,
+          stirSpeedBonus: 1.85,
+          t4: 9,
+          pressSpeedBonus: 1.8,
+          t5: 10,
+          whiskSpeedBonus: 2.1,
+          t6: 10,
+          t7A: 10,
+          t7B: 25,
+          bakeLoop8A: 45,
+          t8B_rest: 3,
+          t8B_move: 6,
+          penaltyFactor: 1.0
+        },
+        hard: {
+          name: 'SCHWER',
+          pillColor: 'var(--mama-red)',
+          t1A: 4,
+          t1B: 3,
+          t2A: 3,
+          bakeLoop2B: 20, // Blitzschnell
+          t3: 6,
+          stirSpeedBonus: 2.2,
+          t4: 6,
+          pressSpeedBonus: 2.3,
+          t5: 6,
+          whiskSpeedBonus: 2.6,
+          t6: 6,
+          t7A: 6,
+          t7B: 18, // Knappe Zeit für alle 18 Chunks!
+          bakeLoop8A: 30,
+          t8B_rest: 3,
+          t8B_move: 4,
+          penaltyFactor: 1.5
+        }
+      };
+
+      const scores = {
+        step1A: 0, step1B: 0, step2A: 0, step2B: 0,
+        step3: 0, step4: 0, step5: 0, step6: 0,
+        step7A: 0, step7B: 0, step8A: 0, step8B: 0
+      };
+
+      function recordScore(stepKey, pts) {
+        scores[stepKey] = Math.max(0, Math.min(100, Math.round(pts)));
+      }
+
+      function showMama(face, msg, isAngry = false) {
+        mamaFace.textContent = face;
+        mamaSpeech.textContent = msg;
+        if (isAngry) {
+          mamaFace.classList.add('angry');
+        } else {
+          mamaFace.classList.remove('angry');
+        }
+      }
+
+      function showRating(text, type = 'perfect') {
+        const pop = document.createElement('div');
+        pop.className = `pop-rating pop-${type}`;
+        pop.textContent = text;
+        touchScreen.appendChild(pop);
+
+        setTimeout(() => pop.classList.add('show'), 20);
+        setTimeout(() => {
+          pop.classList.remove('show');
+          setTimeout(() => pop.remove(), 250);
+        }, 900);
+      }
+
+      function showModeSelection() {
+        clearInterval(activeTimer);
+        clearInterval(activeLoop);
+
+        stepPill.textContent = "MODUS WÄHLEN";
+        stepPill.style.background = "var(--mama-yellow)";
+        timerBadge.textContent = "START";
+        timerBadge.className = 'timer-badge';
+        showMama("👩‍🍳", '"Wähle deinen gewünschten Schwierigkeitsgrad!"');
+
+        touchScreen.innerHTML = `
+          <div class="mode-select-card">
+            <div style="font-size: 2.8rem; margin-bottom: 0.2rem;">👨‍🍳🍪👩‍🍳</div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--mama-pink-dark); margin-bottom: 0.4rem;">SCHWIERIGKEIT</div>
+            <button class="btn-mama btn-green btn-mode" id="btnEasy">🌱 LEICHT (Entspannt)</button>
+            <button class="btn-mama btn-orange btn-mode" id="btnNormal">⚡ NORMAL (Klassisch)</button>
+            <button class="btn-mama btn-mode" style="background: var(--mama-red);" id="btnHard">🔥 SCHWER (Hardcore)</button>
+          </div>
+        `;
+
+        document.getElementById('btnEasy').onclick = () => { currentMode = 'easy'; prepStep1A(); };
+        document.getElementById('btnNormal').onclick = () => { currentMode = 'normal'; prepStep1A(); };
+        document.getElementById('btnHard').onclick = () => { currentMode = 'hard'; prepStep1A(); };
+      }
+
+      function showStepIntro(icon, title, desc, onStartCallback) {
+        clearInterval(activeTimer);
+        clearInterval(activeLoop);
+
+        const cfg = modeConfigs[currentMode];
+        stepPill.textContent = `${cfg.name}: VORBEREITUNG`;
+        stepPill.style.background = cfg.pillColor;
+        timerBadge.textContent = "BEREIT?";
+        timerBadge.className = 'timer-badge';
+        showMama("👩‍🍳", `Aufgepasst! Lies dir die Anleitung durch und drücke Start!`);
+
+        touchScreen.innerHTML = `
+          <div class="instruction-card">
+            <div class="instruction-icon">${icon}</div>
+            <div class="instruction-title">${title}</div>
+            <div class="instruction-desc">${desc}</div>
+            <button class="btn-mama btn-green" id="startStepBtn">START! ➔</button>
+          </div>
+        `;
+
+        document.getElementById('startStepBtn').onclick = onStartCallback;
+      }
+
+      /* ========================================================
+         SCHRITT 1A: ZERKLEINERN
+      ======================================================== */
+      function prepStep1A() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🥦✂️",
+          `Schritt 1A: Zerkleinern (${cfg.t1A}s)`,
+          `Zerteile das Stück in exakt 6 erbsengroße Portionen. Vorsicht: Zu viele Klicks erzeugen Staub! (Zeit: ${cfg.t1A}s)`,
+          startStep1A
+        );
+      }
+
+      function startStep1A() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t1A;
+        let pieceIdCounter = 0;
+        let pieces = [{ id: ++pieceIdCounter, level: 0, x: 115, y: 55 }];
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 1A`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        if (timeLeft <= 5) timerBadge.classList.add('warning');
+        showMama("👩‍🍳", '"Mach genau 6 erbsengroße Stücke!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem;">Tippe zum Zerbrechen:</div>
+          <div class="cutting-board" id="cuttingBoard"></div>
+          <div id="pieceCounterText" style="font-weight: 700; font-size: 0.95rem; color: #7a5250;">Erbsengroße Stücke: 0 / 6</div>
+          <button class="btn-mama btn-green" id="doneCrushBtn" style="margin-top: 0.5rem; padding: 0.5rem 1.4rem;">✅ FERTIG!</button>
+        `;
+
+        const board = document.getElementById('cuttingBoard');
+        const counterText = document.getElementById('pieceCounterText');
+        const doneBtn = document.getElementById('doneCrushBtn');
+
+        function renderPieces() {
+          board.innerHTML = '';
+          let perfectCount = 0;
+          let dustCount = 0;
+
+          pieces.forEach(p => {
+            if (p.level === 2) perfectCount++;
+            if (p.level === 3) dustCount++;
+
+            const el = document.createElement('div');
+            el.className = 'bud-piece';
+            el.style.left = `${p.x}px`;
+            el.style.top = `${p.y}px`;
+
+            if (p.level === 0) { el.classList.add('piece-big'); el.textContent = '🥦'; }
+            else if (p.level === 1) { el.classList.add('piece-medium'); el.textContent = '🥗'; }
+            else if (p.level === 2) { el.classList.add('piece-small'); el.textContent = '🫛'; }
+            else { el.classList.add('piece-dust'); el.textContent = '💨'; }
+
+            el.onclick = () => splitPiece(p.id);
+            board.appendChild(el);
+          });
+
+          counterText.textContent = `Erbsengroße Stücke: ${perfectCount} / 6 ${dustCount > 0 ? `(⚠️ ${dustCount}x Staub)` : ''}`;
+        }
+
+        function splitPiece(id) {
+          const idx = pieces.findIndex(p => p.id === id);
+          if (idx === -1) return;
+          const target = pieces[idx];
+
+          if (target.level === 0) {
+            pieces.splice(idx, 1,
+              { id: ++pieceIdCounter, level: 1, x: Math.max(20, target.x - 45), y: target.y + 10 },
+              { id: ++pieceIdCounter, level: 1, x: Math.min(240, target.x + 45), y: target.y - 10 }
+            );
+          } else if (target.level === 1) {
+            pieces.splice(idx, 1,
+              { id: ++pieceIdCounter, level: 2, x: Math.max(15, target.x - 30), y: Math.max(20, target.y - 20) },
+              { id: ++pieceIdCounter, level: 2, x: Math.min(260, target.x + 30), y: Math.max(20, target.y + 20) },
+              { id: ++pieceIdCounter, level: 2, x: target.x, y: Math.min(160, target.y + 35) }
+            );
+          } else if (target.level === 2) {
+            target.level = 3;
+            showMama("🥺", '"Nicht zu oft klicken!"');
+          }
+          renderPieces();
+        }
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 4) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        doneBtn.onclick = finish;
+
+        function finish() {
+          clearInterval(activeTimer);
+          doneBtn.disabled = true;
+          const perfect = pieces.filter(p => p.level === 2).length;
+          const dust = pieces.filter(p => p.level === 3).length;
+
+          if (perfect >= 5 && dust === 0) {
+            recordScore('step1A', 100);
+            showRating("WONDERFUL! ★", "perfect");
+          } else if (dust > 0) {
+            recordScore('step1A', Math.max(15, 80 - dust * 25 * cfg.penaltyFactor));
+            showRating("ZU STAUBIG!", "bad");
+          } else {
+            recordScore('step1A', 50);
+            showRating("ZU GROSS!", "good");
+          }
+          setTimeout(prepStep1B, 1200);
+        }
+
+        renderPieces();
+      }
+
+      /* ========================================================
+         SCHRITT 1B: BLECH BELEGEN
+      ======================================================== */
+      function prepStep1B() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "📄🌿",
+          `Schritt 1B: Blech belegen (${cfg.t1B}s)`,
+          `Verteile die 6 Stücke zügig auf jedes Feld genau einmal! (Zeit: ${cfg.t1B}s)`,
+          startStep1B
+        );
+      }
+
+      function startStep1B() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t1B;
+        let crumbsLeft = 6;
+        let trayGridState = [0, 0, 0, 0, 0, 0];
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 1B`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Verteile alle 6 Stücke auf die Felder!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.95rem; font-weight: 700;">Verteile alle 6 Stücke:</div>
+          <div class="tray-grid" id="trayGrid">
+            <div class="tray-slot" data-index="0"></div>
+            <div class="tray-slot" data-index="1"></div>
+            <div class="tray-slot" data-index="2"></div>
+            <div class="tray-slot" data-index="3"></div>
+            <div class="tray-slot" data-index="4"></div>
+            <div class="tray-slot" data-index="5"></div>
+          </div>
+          <div style="font-weight: 700;">Noch zu verteilen: <strong id="stashCount" style="color: var(--mama-pink); font-size: 1.2rem;">6</strong></div>
+        `;
+
+        const slots = document.querySelectorAll('.tray-slot');
+        const stashCount = document.getElementById('stashCount');
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        slots.forEach(slot => {
+          slot.onclick = () => {
+            if (crumbsLeft <= 0) return;
+            const idx = parseInt(slot.dataset.index);
+            trayGridState[idx]++;
+            crumbsLeft--;
+            stashCount.textContent = crumbsLeft;
+
+            if (trayGridState[idx] === 1) {
+              slot.textContent = '🌿';
+              slot.classList.add('filled');
+            } else {
+              slot.textContent = '⚠️';
+              slot.classList.add('clumped');
+            }
+
+            if (crumbsLeft === 0) finish();
+          };
+        });
+
+        function finish() {
+          clearInterval(activeTimer);
+          const isPerfect = trayGridState.every(c => c === 1);
+          if (isPerfect) {
+            recordScore('step1B', 100);
+            showRating("PERFEKT! ★★★", "perfect");
+          } else {
+            recordScore('step1B', Math.max(10, 60 - (10 * cfg.penaltyFactor)));
+            showRating("UNSAUBER!", "bad");
+          }
+          setTimeout(prepStep2A, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 2A: DECARB TEMPERATUR
+      ======================================================== */
+      function prepStep2A() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🌡️🔥",
+          `Schritt 2A: Temperatur (${cfg.t2A}s)`,
+          `Stelle mit Plus/Minus exakt 110 °C oder 115 °C ein und bestätige sofort! (Zeit: ${cfg.t2A}s)`,
+          startStep2A
+        );
+      }
+
+      function startStep2A() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t2A;
+        let currentTemp = 75;
+        stepPill.textContent = `${cfg.name}: SCHRITT 2A`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Schnell auf 110 °C – 115 °C stellen!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-weight: 700; font-size: 1rem;">Ziel: 110 °C – 115 °C</div>
+          <div class="dial-wrapper">
+            <div class="temp-display" id="tempText">75 °C</div>
+            <div class="dial-knob" id="dialKnob"><div class="dial-notch"></div></div>
+            <div class="dial-buttons">
+              <button class="btn-step" id="btnMinus">−</button>
+              <button class="btn-step" id="btnPlus">+</button>
+            </div>
+          </div>
+          <button class="btn-mama btn-green" id="confirmTempBtn">START! ✅</button>
+        `;
+
+        const tempText = document.getElementById('tempText');
+        const dialKnob = document.getElementById('dialKnob');
+        const btnMinus = document.getElementById('btnMinus');
+        const btnPlus = document.getElementById('btnPlus');
+        const confirmBtn = document.getElementById('confirmTempBtn');
+
+        function updateDial() {
+          tempText.textContent = `${currentTemp} °C`;
+          const angle = ((currentTemp - 70) / 80) * 240 - 120;
+          dialKnob.style.transform = `rotate(${angle}deg)`;
+          if (currentTemp >= 110 && currentTemp <= 115) {
+            tempText.style.color = '#4ade80';
+          } else {
+            tempText.style.color = '#38bdf8';
+          }
+        }
+
+        btnMinus.onclick = () => { currentTemp = Math.max(50, currentTemp - 5); updateDial(); };
+        btnPlus.onclick = () => { currentTemp = Math.min(150, currentTemp + 5); updateDial(); };
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 2) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) {
+            clearInterval(activeTimer);
+            recordScore('step2A', 20);
+            showRating("ZEIT VORBEI!", "bad");
+            setTimeout(prepStep2B, 1200);
+          }
+        }, 1000);
+
+        confirmBtn.onclick = () => {
+          clearInterval(activeTimer);
+          if (currentTemp >= 110 && currentTemp <= 115) {
+            recordScore('step2A', 100);
+            showRating("PERFEKT! ★★★", "perfect");
+          } else {
+            recordScore('step2A', Math.max(10, 50 - (15 * cfg.penaltyFactor)));
+            showRating("FALSCH!", "bad");
+          }
+          setTimeout(prepStep2B, 1200);
+        };
+
+        updateDial();
+      }
+
+      /* ========================================================
+         SCHRITT 2B: BLECH BEI GOLDBRAUN ZIEHEN
+      ======================================================== */
+      function prepStep2B() {
+        showStepIntro(
+          "🧤💨",
+          "Schritt 2B: Blech ziehen",
+          "Achte auf das Röstfenster im grünen Bereich. Sobald es erreicht ist, ziehe das Blech sofort nach unten!",
+          startStep2B
+        );
+      }
+
+      function startStep2B() {
+        const cfg = modeConfigs[currentMode];
+        stepPill.textContent = `${cfg.name}: SCHRITT 2B`;
+        timerBadge.textContent = "⏱️ RÖSTEN";
+        let bakeProgress = 0;
+        let isPulledOut = false;
+
+        showMama("👩‍🍳", '"Zieh das Blech bei Goldbraun nach unten heraus!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.2rem;">Zieh das Blech bei Goldbraun heraus!</div>
+          <div class="oven-stage-container" id="ovenContainer">
+            <div class="draggable-tray" id="dragTray">
+              <div class="tray-handle"></div>
+              <div id="trayBuds" style="font-size: 2rem;">🌿 🌿 🌿</div>
+            </div>
+            <div class="hint-arrow-bounce">⬇️ NACH UNTEN ZIEHEN! ⬇️</div>
+          </div>
+          <div class="generic-meter">
+            <div class="meter-zone-target"></div>
+            <div class="meter-bar-fill" id="bakeFill"></div>
+          </div>
+        `;
+
+        const bakeFill = document.getElementById('bakeFill');
+        const dragTray = document.getElementById('dragTray');
+        const trayBuds = document.getElementById('trayBuds');
+
+        activeLoop = setInterval(() => {
+          if (isPulledOut) return;
+          bakeProgress += 1;
+          bakeFill.style.width = bakeProgress + '%';
+
+          if (bakeProgress === 35) { trayBuds.textContent = '🍃 🍃 🍃'; }
+          else if (bakeProgress === 65) { trayBuds.textContent = '🍂 🍂 🍂'; }
+
+          if (bakeProgress >= 100) {
+            clearInterval(activeLoop);
+            isPulledOut = true;
+            recordScore('step2B', 15);
+            showRating("VERBRANNT!", "bad");
+            setTimeout(prepStep3, 1200);
+          }
+        }, cfg.bakeLoop2B);
+
+        let isDragging = false;
+        let startY = 0;
+
+        function onDown(e) {
+          if (isPulledOut) return;
+          isDragging = true;
+          startY = e.clientY || (e.touches && e.touches[0].clientY);
+          dragTray.style.transition = 'none';
+        }
+
+        function onMove(e) {
+          if (!isDragging || isPulledOut) return;
+          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+          const deltaY = clientY - startY;
+
+          if (deltaY > 0) {
+            const newY = Math.min(190, 25 + deltaY);
+            dragTray.style.top = `${newY}px`;
+
+            if (newY >= 135) {
+              isDragging = false;
+              isPulledOut = true;
+              clearInterval(activeLoop);
+              dragTray.style.transition = 'top 0.3s ease-out';
+              dragTray.style.top = '210px';
+
+              if (bakeProgress >= 65 && bakeProgress <= 87) {
+                recordScore('step2B', 100);
+                showRating("PERFEKT! ★★★", "perfect");
+              } else {
+                recordScore('step2B', Math.max(20, 60 - (10 * cfg.penaltyFactor)));
+                showRating("VERFEHLT!", "bad");
+              }
+              setTimeout(prepStep3, 1200);
+            }
+          }
+        }
+
+        function onUp() {
+          if (!isDragging || isPulledOut) return;
+          isDragging = false;
+          dragTray.style.transition = 'top 0.2s ease-out';
+          dragTray.style.top = '25px';
+        }
+
+        dragTray.addEventListener('mousedown', onDown);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        dragTray.addEventListener('touchstart', onDown, { passive: true });
+        window.addEventListener('touchmove', onMove, { passive: true });
+        window.addEventListener('touchend', onUp);
+      }
+
+      /* ========================================================
+         SCHRITT 3: WASSERBAD
+      ======================================================== */
+      function prepStep3() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🧈🔄",
+          `Schritt 3: Das Wasserbad (${cfg.t3}s)`,
+          `Rühre gleichmäßig im Kreis im grünen Bereich! (Zeit: ${cfg.t3}s)`,
+          startStep3
+        );
+      }
+
+      function startStep3() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t3;
+        let infusionProgress = 0;
+        let currentSpeed = 0;
+        let lastAngle = null;
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 3`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Rühre im Kreis, bis alles sattgrün ist!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.95rem; font-weight: 700;">Kreise im Topf:</div>
+          <div class="pot-assembly">
+            <div class="steam-container">
+              <span class="steam-puff">💨</span><span class="steam-puff">♨️</span><span class="steam-puff">💨</span>
+            </div>
+            <div class="outer-pot" id="outerPot">
+              <div class="inner-bowl" id="innerBowl"><div class="herb-swirl" id="herbSwirl"></div></div>
+              <div class="spoon-indicator" id="spoonGuide" style="left: 50%; top: 22%;">🥄</div>
+            </div>
+          </div>
+          <div class="generic-meter">
+            <div style="position: absolute; left: 20%; width: 45%; top: 0; bottom: 0; background: rgba(126, 217, 87, 0.45); border-left: 2px dashed #15803d; border-right: 2px dashed #15803d;"></div>
+            <div class="meter-bar-fill" id="speedFill"></div>
+          </div>
+          <div id="infusionLabel" style="font-weight: 700; font-size: 0.92rem; margin-top: 0.2rem;">Infusion: 0%</div>
+        `;
+
+        const outerPot = document.getElementById('outerPot');
+        const innerBowl = document.getElementById('innerBowl');
+        const swirl = document.getElementById('herbSwirl');
+        const spoon = document.getElementById('spoonGuide');
+        const speedFill = document.getElementById('speedFill');
+        const infusionLabel = document.getElementById('infusionLabel');
+
+        let isStirring = false;
+
+        function handlePointerMove(e) {
+          if (!isStirring) return;
+          const rect = outerPot.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+          const dx = clientX - centerX;
+          const dy = clientY - centerY;
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+          const radius = Math.min(65, Math.hypot(dx, dy));
+
+          spoon.style.left = `${105 + Math.cos(angle * Math.PI / 180) * radius}px`;
+          spoon.style.top = `${105 + Math.sin(angle * Math.PI / 180) * radius}px`;
+
+          if (lastAngle !== null) {
+            let delta = Math.abs(angle - lastAngle);
+            if (delta > 180) delta = 360 - delta;
+            currentSpeed = currentSpeed * 0.65 + delta * 0.35;
+          }
+          lastAngle = angle;
+        }
+
+        outerPot.addEventListener('pointerdown', (e) => { isStirring = true; outerPot.setPointerCapture(e.pointerId); });
+        outerPot.addEventListener('pointermove', handlePointerMove);
+        outerPot.addEventListener('pointerup', () => { isStirring = false; lastAngle = null; });
+
+        activeLoop = setInterval(() => {
+          currentSpeed *= 0.92;
+          const speedPercent = Math.min(100, (currentSpeed / 16) * 100);
+          speedFill.style.width = `${speedPercent}%`;
+
+          if (currentSpeed >= 2.5 && currentSpeed <= 11.5) {
+            speedFill.style.backgroundColor = 'var(--mama-green)';
+            innerBowl.classList.add('active-good');
+            swirl.style.animationPlayState = 'running';
+            infusionProgress = Math.min(100, infusionProgress + cfg.stirSpeedBonus);
+
+            const f = infusionProgress / 100;
+            const r = Math.round(254 - (254 - 77) * f);
+            const g = Math.round(240 - (240 - 124) * f);
+            const b = Math.round(138 - (138 - 15) * f);
+            innerBowl.style.background = `rgb(${r}, ${g}, ${b})`;
+            infusionLabel.textContent = `Infusion: ${Math.floor(infusionProgress)}%`;
+          } else {
+            speedFill.style.backgroundColor = currentSpeed > 11.5 ? 'var(--mama-red)' : 'var(--mama-yellow)';
+            innerBowl.classList.remove('active-good');
+            swirl.style.animationPlayState = 'paused';
+          }
+
+          if (infusionProgress >= 100) finish();
+        }, 80);
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        function finish() {
+          clearInterval(activeLoop);
+          clearInterval(activeTimer);
+          recordScore('step3', Math.min(100, infusionProgress));
+          if (infusionProgress >= 90) {
+            showRating("GUT INFUNDIERT! ★★★", "perfect");
+          } else {
+            showRating("ZU WENIG ZEIT!", "bad");
+          }
+          setTimeout(prepStep4, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 4: ABSEIHEN
+      ======================================================== */
+      function prepStep4() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🫙⬇️",
+          `Schritt 4: Das Abseihen (${cfg.t4}s)`,
+          `Ziehe das Tuch rhythmisch nach unten aus, ohne dass es reißt! (Zeit: ${cfg.t4}s)`,
+          startStep4
+        );
+      }
+
+      function startStep4() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t4;
+        let squeezedProgress = 0;
+        let clothTension = 0;
+        let isClothRipped = false;
+        let ripCount = 0;
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 4`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Kontrolliert nach unten pressen!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.95rem; font-weight: 700;">Ziehe das Tuch nach unten:</div>
+          <div class="filter-rig" id="filterRig">
+            <div class="cloth-pouch" id="clothPouch"><div style="font-size: 1.8rem;" id="pouchIcon">🌿🫓</div></div>
+            <div class="glass-jar"><div class="jar-fill" id="jarFill"></div></div>
+          </div>
+          <div class="generic-meter">
+            <div style="position: absolute; left: 35%; width: 35%; top: 0; bottom: 0; background: rgba(126, 217, 87, 0.45); border-left: 2px dashed #15803d; border-right: 2px dashed #15803d;"></div>
+            <div class="meter-bar-fill" id="tensionFill"></div>
+          </div>
+          <div id="yieldText" style="font-weight: 700; font-size: 0.92rem; margin-top: 0.2rem;">Ausbeute: 0%</div>
+        `;
+
+        const pouch = document.getElementById('clothPouch');
+        const jarFill = document.getElementById('jarFill');
+        const tensionFill = document.getElementById('tensionFill');
+        const yieldText = document.getElementById('yieldText');
+        const filterRig = document.getElementById('filterRig');
+        const pouchIcon = document.getElementById('pouchIcon');
+
+        let isDragging = false;
+        let startY = 0;
+
+        pouch.addEventListener('pointerdown', (e) => {
+          if (isClothRipped) return;
+          isDragging = true;
+          startY = e.clientY || (e.touches && e.touches[0].clientY);
+          pouch.setPointerCapture(e.pointerId);
+        });
+
+        pouch.addEventListener('pointermove', (e) => {
+          if (!isDragging || isClothRipped) return;
+          const currentY = e.clientY || (e.touches && e.touches[0].clientY);
+          const deltaY = currentY - startY;
+
+          if (deltaY > 5) {
+            clothTension = Math.min(100, clothTension + deltaY * 0.55);
+            startY = currentY;
+          }
+        });
+
+        pouch.addEventListener('pointerup', () => isDragging = false);
+
+        activeLoop = setInterval(() => {
+          if (isClothRipped) return;
+          clothTension = Math.max(0, clothTension - 3.4);
+          tensionFill.style.width = `${clothTension}%`;
+
+          if (clothTension > 75) {
+            tensionFill.style.backgroundColor = 'var(--mama-red)';
+            if (clothTension > 92) {
+              isClothRipped = true;
+              ripCount++;
+              pouch.classList.add('ripped');
+              pouchIcon.textContent = '💥🥀';
+              showMama("🥺", '"Tuch gerissen!"', true);
+              setTimeout(() => {
+                isClothRipped = false;
+                clothTension = 20;
+                pouch.classList.remove('ripped');
+                pouchIcon.textContent = '🌿🫓';
+              }, 1200);
+            }
+          } else if (clothTension >= 35 && clothTension <= 75) {
+            tensionFill.style.backgroundColor = 'var(--mama-green)';
+            squeezedProgress = Math.min(100, squeezedProgress + cfg.pressSpeedBonus);
+            jarFill.style.height = `${squeezedProgress}%`;
+            yieldText.textContent = `Ausbeute: ${Math.floor(squeezedProgress)}%`;
+
+            if (Math.random() < 0.55) {
+              const drop = document.createElement('div');
+              drop.className = 'butter-drop';
+              drop.style.left = `${115 + Math.random() * 10}px`;
+              filterRig.appendChild(drop);
+              setTimeout(() => drop.remove(), 450);
+            }
+          } else {
+            tensionFill.style.backgroundColor = 'var(--mama-yellow)';
+          }
+
+          if (squeezedProgress >= 100) finish();
+        }, 80);
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        function finish() {
+          clearInterval(activeLoop);
+          clearInterval(activeTimer);
+          const score = Math.max(15, Math.round(squeezedProgress - ripCount * 25 * cfg.penaltyFactor));
+          recordScore('step4', score);
+          if (score >= 80) {
+            showRating("SAUBER! ★★★", "perfect");
+          } else {
+            showRating("ZU WENIG AUSBEUTE!", "bad");
+          }
+          setTimeout(prepStep5, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 5: NASSZUTATEN
+      ======================================================== */
+      function prepStep5() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🧈🥚",
+          `Schritt 5: Nasszutaten (${cfg.t5}s)`,
+          `Zieh die 4 Zutaten rein, schlag das Ei 2x an der Kante an und schlag alles cremig! (Zeit: ${cfg.t5}s)`,
+          startStep5
+        );
+      }
+
+      function startStep5() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t5;
+        let ingredientsCount = 0;
+        let eggCracks = 0;
+        let eggDone = false;
+        let isWhiskPhase = false;
+        let stirProgress = 0;
+        let lastX = 0, lastY = 0;
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 5`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Alle Zutaten rein und aufschlagen!"');
+
+        touchScreen.innerHTML = `
+          <div class="dock-container" id="wetDock">
+            <div class="drag-card" id="wButter">🧈</div>
+            <div class="drag-card" id="wBrown">🟤</div>
+            <div class="drag-card" id="wWhite">⚪</div>
+            <div class="drag-card" id="wVanilla">🧴</div>
+            <div class="drag-card" id="wEgg">🥚</div>
+          </div>
+          <div class="mixing-bowl" id="mixBowl">
+            <div class="rim-button" id="rimBtn">⚡ KANTE ⚡</div>
+            <div class="bowl-liquid-inside" id="bowlLiquid">
+              <div id="bowlContentIcons" style="font-size: 1.8rem; display: flex; gap: 4px;"></div>
+            </div>
+          </div>
+          <div class="generic-meter"><div class="meter-bar-fill" id="meterFill"></div></div>
+          <div id="statusLabel" style="font-weight: 700; font-size: 0.92rem; margin-top: 0.2rem;">Zutaten: 0 / 5 in der Schüssel</div>
+        `;
+
+        const bowl = document.getElementById('mixBowl');
+        const rimBtn = document.getElementById('rimBtn');
+        const wetDock = document.getElementById('wetDock');
+        const contentIcons = document.getElementById('bowlContentIcons');
+        const meterFill = document.getElementById('meterFill');
+        const statusLabel = document.getElementById('statusLabel');
+        const bowlLiquid = document.getElementById('bowlLiquid');
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        document.querySelectorAll('.drag-card').forEach(card => {
+          let isDragging = false;
+          let startX, startY;
+
+          function onDown(e) {
+            if (isWhiskPhase) return;
+            isDragging = true;
+            startX = e.clientX || (e.touches && e.touches[0].clientX);
+            startY = e.clientY || (e.touches && e.touches[0].clientY);
+            card.setPointerCapture(e.pointerId);
+          }
+
+          function onMove(e) {
+            if (!isDragging) return;
+            const curX = e.clientX || (e.touches && e.touches[0].clientX);
+            const curY = e.clientY || (e.touches && e.touches[0].clientY);
+            card.style.transform = `translate(${curX - startX}px, ${curY - startY}px) scale(1.15)`;
+          }
+
+          function onUp(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const curX = e.clientX || (e.touches && e.changedTouches[0].clientX);
+            const curY = e.clientY || (e.touches && e.changedTouches[0].clientY);
+            const bowlRect = bowl.getBoundingClientRect();
+            const rimRect = rimBtn.getBoundingClientRect();
+
+            if (card.id === 'wEgg') {
+              if (!eggDone && curX >= rimRect.left && curX <= rimRect.right && curY >= rimRect.top && curY <= rimRect.bottom) {
+                eggCracks++;
+                if (eggCracks === 1) {
+                  card.textContent = '⚡🥚';
+                  card.style.transform = 'translate(0, 0)';
+                } else if (eggCracks >= 2) {
+                  eggDone = true;
+                  card.classList.add('used');
+                  rimBtn.style.display = 'none';
+                  addIngredient("🍳");
+                }
+              } else {
+                card.style.transform = 'translate(0, 0)';
+              }
+            } else {
+              if (curX >= bowlRect.left && curX <= bowlRect.right && curY >= bowlRect.top && curY <= bowlRect.bottom) {
+                card.classList.add('used');
+                addIngredient(card.textContent);
+              } else {
+                card.style.transform = 'translate(0, 0)';
+              }
+            }
+          }
+
+          card.addEventListener('pointerdown', onDown);
+          card.addEventListener('pointermove', onMove);
+          card.addEventListener('pointerup', onUp);
+        });
+
+        function addIngredient(icon) {
+          ingredientsCount++;
+          const span = document.createElement('span');
+          span.textContent = icon;
+          contentIcons.appendChild(span);
+          statusLabel.textContent = `Zutaten: ${ingredientsCount} / 5 in der Schüssel`;
+
+          if (ingredientsCount === 5) {
+            isWhiskPhase = true;
+            wetDock.style.display = 'none';
+            stepPill.textContent = "CREMIG SCHLAGEN!";
+            showMama("💖", '"JETZT WIRBELN!"');
+          }
+        }
+
+        let isWhisking = false;
+        bowl.addEventListener('pointerdown', (e) => {
+          if (!isWhiskPhase) return;
+          isWhisking = true;
+          lastX = e.clientX || (e.touches && e.touches[0].clientX);
+          lastY = e.clientY || (e.touches && e.touches[0].clientY);
+          bowl.setPointerCapture(e.pointerId);
+        });
+
+        bowl.addEventListener('pointermove', (e) => {
+          if (!isWhiskPhase || !isWhisking) return;
+          const curX = e.clientX || (e.touches && e.touches[0].clientX);
+          const curY = e.clientY || (e.touches && e.touches[0].clientY);
+          const dist = Math.hypot(curX - lastX, curY - lastY);
+
+          if (dist > 6) {
+            stirProgress = Math.min(100, stirProgress + cfg.whiskSpeedBonus);
+            meterFill.style.width = `${stirProgress}%`;
+            contentIcons.style.opacity = `${1 - stirProgress / 80}`;
+            if (stirProgress > 45) {
+              bowlLiquid.style.background = 'radial-gradient(circle, #fef08a 40%, #eab308 90%)';
+            }
+            if (stirProgress >= 100) finish();
+          }
+          lastX = curX;
+          lastY = curY;
+        });
+
+        bowl.addEventListener('pointerup', () => isWhisking = false);
+
+        function finish() {
+          clearInterval(activeTimer);
+          recordScore('step5', Math.min(100, stirProgress));
+          if (stirProgress >= 90) {
+            showRating("WONDERFUL! ★★★", "perfect");
+          } else {
+            showRating("ZU LANGSAM!", "bad");
+          }
+          setTimeout(prepStep6, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 6: TROCKENZUTATEN
+      ======================================================== */
+      function prepStep6() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🌾🍫",
+          `Schritt 6: Trockenzutaten (${cfg.t6}s)`,
+          `Zieh Mehl, Natron, Salz und Drops rein und hebe sie vorsichtig unter – niemals überkneten! (Zeit: ${cfg.t6}s)`,
+          startStep6
+        );
+      }
+
+      function startStep6() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t6;
+        let ingredientsCount = 0;
+        let isFoldingPhase = false;
+        let foldProgress = 0;
+        let lastX = 0, lastY = 0;
+        let isOverworked = false;
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 6`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Zutaten rein und gefühlvoll unterheben!"');
+
+        touchScreen.innerHTML = `
+          <div class="dock-container" id="dryDock">
+            <div class="drag-card" id="dFlour">🌾</div>
+            <div class="drag-card" id="dSoda">🧂</div>
+            <div class="drag-card" id="dSalt">⚪</div>
+            <div class="drag-card" id="dChoc">🍫</div>
+          </div>
+          <div class="mixing-bowl dry-mode" id="foldBowl">
+            <div class="bowl-liquid-inside" id="foldLiquid" style="background: radial-gradient(circle, #fef08a 35%, #ca8a04 90%);">
+              <div id="flourNest1" style="position: absolute; width: 30px; height: 30px; background: white; border-radius: 50%; opacity: 0; left: 35px; top: 40px;"></div>
+              <div id="flourNest2" style="position: absolute; width: 34px; height: 34px; background: white; border-radius: 50%; opacity: 0; right: 35px; bottom: 40px;"></div>
+            </div>
+          </div>
+          <div class="generic-meter" id="foldMeter" style="visibility: hidden;">
+            <div class="meter-zone-target" style="left: 70%; width: 20%;"></div>
+            <div class="meter-bar-fill" id="foldBarFill"></div>
+          </div>
+          <div id="dryStatus" style="font-weight: 700; font-size: 0.92rem; margin-top: 0.2rem;">Zutaten: 0 / 4 hinzugefügt</div>
+        `;
+
+        const bowl = document.getElementById('foldBowl');
+        const dryDock = document.getElementById('dryDock');
+        const foldMeter = document.getElementById('foldMeter');
+        const foldBarFill = document.getElementById('foldBarFill');
+        const dryStatus = document.getElementById('dryStatus');
+        const nest1 = document.getElementById('flourNest1');
+        const nest2 = document.getElementById('flourNest2');
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        document.querySelectorAll('#dryDock .drag-card').forEach(card => {
+          let isDragging = false;
+          let startX, startY;
+
+          function onDown(e) {
+            if (isFoldingPhase) return;
+            isDragging = true;
+            startX = e.clientX || (e.touches && e.touches[0].clientX);
+            startY = e.clientY || (e.touches && e.touches[0].clientY);
+            card.setPointerCapture(e.pointerId);
+          }
+
+          function onMove(e) {
+            if (!isDragging) return;
+            const curX = e.clientX || (e.touches && e.touches[0].clientX);
+            const curY = e.clientY || (e.touches && e.touches[0].clientY);
+            card.style.transform = `translate(${curX - startX}px, ${curY - startY}px) scale(1.15)`;
+          }
+
+          function onUp(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const curX = e.clientX || (e.touches && e.changedTouches[0].clientX);
+            const curY = e.clientY || (e.touches && e.changedTouches[0].clientY);
+            const bowlRect = bowl.getBoundingClientRect();
+
+            if (curX >= bowlRect.left && curX <= bowlRect.right && curY >= bowlRect.top && curY <= bowlRect.bottom) {
+              card.classList.add('used');
+              ingredientsCount++;
+              dryStatus.textContent = `Zutaten: ${ingredientsCount} / 4 hinzugefügt`;
+
+              if (card.id === 'dFlour') {
+                nest1.style.opacity = '0.9';
+                nest2.style.opacity = '0.9';
+              }
+
+              if (ingredientsCount === 4) {
+                isFoldingPhase = true;
+                dryDock.style.display = 'none';
+                foldMeter.style.visibility = 'visible';
+                stepPill.textContent = "UNTERHEBEN – STOPP IM GRÜNEN!";
+                showMama("👩‍🍳", '"Nur kurz unterheben! Stoppe im grünen Bereich!"');
+              }
+            } else {
+              card.style.transform = 'translate(0, 0)';
+            }
+          }
+
+          card.addEventListener('pointerdown', onDown);
+          card.addEventListener('pointermove', onMove);
+          card.addEventListener('pointerup', onUp);
+        });
+
+        let isFolding = false;
+        bowl.addEventListener('pointerdown', (e) => {
+          if (!isFoldingPhase || isOverworked) return;
+          isFolding = true;
+          lastX = e.clientX || (e.touches && e.touches[0].clientX);
+          lastY = e.clientY || (e.touches && e.touches[0].clientY);
+          bowl.setPointerCapture(e.pointerId);
+        });
+
+        bowl.addEventListener('pointermove', (e) => {
+          if (!isFoldingPhase || !isFolding || isOverworked) return;
+          const curX = e.clientX || (e.touches && e.touches[0].clientX);
+          const curY = e.clientY || (e.touches && e.touches[0].clientY);
+          const dist = Math.hypot(curX - lastX, curY - lastY);
+
+          if (dist > 7) {
+            foldProgress = Math.min(100, foldProgress + (currentMode === 'hard' ? 2.0 : 1.5));
+            foldBarFill.style.width = `${foldProgress}%`;
+            nest1.style.opacity = `${Math.max(0, 0.9 - foldProgress / 75)}`;
+            nest2.style.opacity = `${Math.max(0, 0.9 - foldProgress / 75)}`;
+
+            if (foldProgress >= 70 && foldProgress <= 90) {
+              dryStatus.textContent = `PERFEKT! ${Math.floor(foldProgress)}% (STOPP!)`;
+              dryStatus.style.color = '#15803d';
+            } else if (foldProgress > 90) {
+              isOverworked = true;
+              dryStatus.textContent = `ÜBERKNETET!`;
+              dryStatus.style.color = '#b91c1c';
+              showMama("🥺", '"Zu viel gerührt!"', true);
+              setTimeout(finish, 1000);
+            }
+          }
+          lastX = curX;
+          lastY = curY;
+        });
+
+        bowl.addEventListener('pointerup', () => {
+          if (!isFolding) return;
+          isFolding = false;
+          if (foldProgress >= 70 && foldProgress <= 90) {
+            finish();
+          }
+        });
+
+        function finish() {
+          clearInterval(activeTimer);
+          if (foldProgress >= 70 && !isOverworked) {
+            recordScore('step6', 100);
+            showRating("PERFEKT! ★★★", "perfect");
+          } else if (isOverworked) {
+            recordScore('step6', Math.max(10, 40 - (10 * cfg.penaltyFactor)));
+            showRating("ÜBERKNETET!", "bad");
+          } else {
+            recordScore('step6', 45);
+            showRating("UNFERTIG!", "bad");
+          }
+          setTimeout(prepStep7A, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 7A: KUGELN SETZEN
+      ======================================================== */
+      function prepStep7A() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🍪📏",
+          `Schritt 7A: Teigkugeln setzen (${cfg.t7A}s)`,
+          `Zieh alle 6 Kugeln mit viel Abstand auf das Blech! Nicht flachdrücken! (Zeit: ${cfg.t7A}s)`,
+          startStep7A
+        );
+      }
+
+      function startStep7A() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t7A;
+        let placedBalls = 0;
+        let flattenedPenalties = 0;
+        const slotsData = [
+          { x: 22, y: 30, filled: false, el: null },
+          { x: 50, y: 30, filled: false, el: null },
+          { x: 78, y: 30, filled: false, el: null },
+          { x: 22, y: 70, filled: false, el: null },
+          { x: 50, y: 70, filled: false, el: null },
+          { x: 78, y: 70, filled: false, el: null }
+        ];
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 7A`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Schnell 6 Kugeln platzieren!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.92rem; font-weight: 700;">6 Kugeln setzen:</div>
+          <div class="cookie-sheet"><div class="cookie-sheet-paper" id="paperSheet"></div></div>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.3rem;">
+            <div class="dough-sphere" id="stashBall"></div>
+            <div style="font-weight: 700;">Kugeln: <span id="ballsCount" style="color: var(--mama-pink); font-size: 1.1rem;">0 / 6</span></div>
+          </div>
+        `;
+
+        const paper = document.getElementById('paperSheet');
+        const stashBall = document.getElementById('stashBall');
+        const ballsCount = document.getElementById('ballsCount');
+
+        slotsData.forEach(s => {
+          const spot = document.createElement('div');
+          spot.className = 'ball-spot';
+          spot.style.left = `${s.x}%`;
+          spot.style.top = `${s.y}%`;
+          paper.appendChild(spot);
+          s.el = spot;
+        });
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 3) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        let isDragging = false;
+        let dragClone = null;
+        let startX, startY;
+
+        stashBall.addEventListener('pointerdown', (e) => {
+          if (placedBalls >= 6) return;
+          isDragging = true;
+          startX = e.clientX || (e.touches && e.touches[0].clientX);
+          startY = e.clientY || (e.touches && e.touches[0].clientY);
+
+          dragClone = stashBall.cloneNode(true);
+          dragClone.style.position = 'fixed';
+          dragClone.style.pointerEvents = 'none';
+          dragClone.style.zIndex = '1000';
+          dragClone.style.left = `${startX - 28}px`;
+          dragClone.style.top = `${startY - 28}px`;
+          document.body.appendChild(dragClone);
+          stashBall.setPointerCapture(e.pointerId);
+        });
+
+        stashBall.addEventListener('pointermove', (e) => {
+          if (!isDragging || !dragClone) return;
+          const curX = e.clientX || (e.touches && e.touches[0].clientX);
+          const curY = e.clientY || (e.touches && e.touches[0].clientY);
+          dragClone.style.left = `${curX - 28}px`;
+          dragClone.style.top = `${curY - 28}px`;
+
+          slotsData.forEach(s => {
+            if (!s.filled) {
+              const r = s.el.getBoundingClientRect();
+              if (curX >= r.left && curX <= r.right && curY >= r.top && curY <= r.bottom) {
+                s.el.classList.add('highlight');
+              } else {
+                s.el.classList.remove('highlight');
+              }
+            }
+          });
+        });
+
+        stashBall.addEventListener('pointerup', (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          if (dragClone) { dragClone.remove(); dragClone = null; }
+
+          const curX = e.clientX || (e.touches && e.changedTouches[0].clientX);
+          const curY = e.clientY || (e.touches && e.changedTouches[0].clientY);
+
+          let target = null;
+          slotsData.forEach(s => {
+            s.el.classList.remove('highlight');
+            if (!s.filled) {
+              const r = s.el.getBoundingClientRect();
+              if (curX >= r.left && curX <= r.right && curY >= r.top && curY <= r.bottom) {
+                target = s;
+              }
+            }
+          });
+
+          if (target) {
+            target.filled = true;
+            placedBalls++;
+            ballsCount.textContent = `${placedBalls} / 6`;
+
+            const ball = document.createElement('div');
+            ball.className = 'dough-sphere';
+            target.el.appendChild(ball);
+
+            ball.onclick = () => {
+              if (!ball.classList.contains('flattened')) {
+                ball.classList.add('flattened');
+                flattenedPenalties++;
+                showMama("🥺", '"Nicht flachdrücken!"', true);
+              }
+            };
+
+            if (placedBalls === 6) finish();
+          }
+        });
+
+        function finish() {
+          clearInterval(activeTimer);
+          const score = Math.max(15, Math.round((placedBalls / 6) * 100 - (flattenedPenalties * 25 * cfg.penaltyFactor)));
+          recordScore('step7A', score);
+          if (placedBalls === 6 && flattenedPenalties === 0) {
+            showRating("PERFEKT! ★★★", "perfect");
+          } else {
+            showRating("UNVOLLSTÄNDIG!", "bad");
+          }
+          setTimeout(prepStep7B, 1200);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 7B: 18 CHUNKS VERTEILEN (EXAKT 3 PRO COOKIE)
+      ======================================================== */
+      function prepStep7B() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "🍫✨",
+          `Schritt 7B: Chunks belegen (${cfg.t7B}s)`,
+          `Alle 6 Cookies brauchen genau 3 Schokostücke (insgesamt 18 Stück). Verteile sie sauber! (Zeit: ${cfg.t7B}s)`,
+          startStep7B
+        );
+      }
+
+      function startStep7B() {
+        const cfg = modeConfigs[currentMode];
+        let timeLeft = cfg.t7B;
+        let chipsLeft = 18;
+        const slotsPos = [
+          { x: 22, y: 30, chips: 0, el: null },
+          { x: 50, y: 30, chips: 0, el: null },
+          { x: 78, y: 30, chips: 0, el: null },
+          { x: 22, y: 70, chips: 0, el: null },
+          { x: 50, y: 70, chips: 0, el: null },
+          { x: 78, y: 70, chips: 0, el: null }
+        ];
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 7B`;
+        timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+        showMama("👩‍🍳", '"Gib jedem Cookie genau 3 Schokostücke!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.92rem; font-weight: 700;">Jeder Cookie braucht 3 Stücke:</div>
+          <div class="cookie-sheet"><div class="cookie-sheet-paper" id="paper7B"></div></div>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.3rem;">
+            <div class="drag-card" id="chipSource" style="width: 44px; height: 44px; font-size: 1.4rem;">🍫</div>
+            <div style="font-weight: 700;">Noch übrig: <span id="chipsCountLabel" style="color: var(--mama-pink); font-size: 1.1rem;">18</span></div>
+          </div>
+        `;
+
+        const paper = document.getElementById('paper7B');
+        const chipSource = document.getElementById('chipSource');
+        const chipsCountLabel = document.getElementById('chipsCountLabel');
+
+        slotsPos.forEach(s => {
+          const ball = document.createElement('div');
+          ball.className = 'dough-sphere';
+          ball.style.position = 'absolute';
+          ball.style.left = `${s.x}%`;
+          ball.style.top = `${s.y}%`;
+          ball.style.transform = 'translate(-50%, -50%)';
+          paper.appendChild(ball);
+          s.el = ball;
+        });
+
+        activeTimer = setInterval(() => {
+          timeLeft--;
+          timerBadge.textContent = `⏱️ ${timeLeft < 10 ? '0' : ''}${timeLeft}s`;
+          if (timeLeft <= 4) timerBadge.classList.add('warning');
+          if (timeLeft <= 0) finish();
+        }, 1000);
+
+        let isDragging = false;
+        let dragClone = null;
+        let startX, startY;
+
+        chipSource.addEventListener('pointerdown', (e) => {
+          if (chipsLeft <= 0) return;
+          isDragging = true;
+          startX = e.clientX || (e.touches && e.touches[0].clientX);
+          startY = e.clientY || (e.touches && e.touches[0].clientY);
+
+          dragClone = chipSource.cloneNode(true);
+          dragClone.style.position = 'fixed';
+          dragClone.style.pointerEvents = 'none';
+          dragClone.style.zIndex = '1000';
+          dragClone.style.left = `${startX - 22}px`;
+          dragClone.style.top = `${startY - 22}px`;
+          document.body.appendChild(dragClone);
+          chipSource.setPointerCapture(e.pointerId);
+        });
+
+        chipSource.addEventListener('pointermove', (e) => {
+          if (!isDragging || !dragClone) return;
+          const curX = e.clientX || (e.touches && e.touches[0].clientX);
+          const curY = e.clientY || (e.touches && e.touches[0].clientY);
+          dragClone.style.left = `${curX - 22}px`;
+          dragClone.style.top = `${curY - 22}px`;
+        });
+
+        chipSource.addEventListener('pointerup', (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          if (dragClone) { dragClone.remove(); dragClone = null; }
+
+          const curX = e.clientX || (e.touches && e.changedTouches[0].clientX);
+          const curY = e.clientY || (e.touches && e.changedTouches[0].clientY);
+
+          slotsPos.forEach(s => {
+            const r = s.el.getBoundingClientRect();
+            if (curX >= r.left && curX <= r.right && curY >= r.top && curY <= r.bottom) {
+              if (s.chips < 3 && chipsLeft > 0) {
+                s.chips++;
+                chipsLeft--;
+                chipsCountLabel.textContent = chipsLeft;
+
+                const bit = document.createElement('div');
+                bit.className = 'chunk-bit';
+                if (s.chips === 1) { bit.style.top = '18%'; bit.style.left = '22%'; }
+                else if (s.chips === 2) { bit.style.top = '30%'; bit.style.left = '60%'; }
+                else { bit.style.top = '62%'; bit.style.left = '36%'; }
+                s.el.appendChild(bit);
+
+                if (chipsLeft === 0) finish();
+              }
+            }
+          });
+        });
+
+        function finish() {
+          clearInterval(activeTimer);
+          const perfectCookies = slotsPos.filter(s => s.chips === 3).length;
+          const score = Math.round((perfectCookies / 6) * 100);
+          recordScore('step7B', score);
+
+          if (score === 100) {
+            showRating("ALLE 6 PERFEKT! ★★★", "perfect");
+            showMama("💖", '"Genial! Jeder Cookie hat exakt 3 Chunks!"');
+          } else {
+            showRating("NICHT GLEICHMÄSSIG!", "good");
+          }
+          setTimeout(prepStep8A, 1400);
+        }
+      }
+
+      /* ========================================================
+         SCHRITT 8A: BACKEN IM OFEN
+      ======================================================== */
+      function prepStep8A() {
+        showStepIntro(
+          "🔥🍪",
+          "Schritt 8A: Backen im Ofen",
+          "Beobachte die 6 Cookies im Ofen. Sobald die Ränder goldbraun sind (Zielbereich), ziehe das Blech sofort nach unten heraus!",
+          startStep8A
+        );
+      }
+
+      function startStep8A() {
+        const cfg = modeConfigs[currentMode];
+        stepPill.textContent = `${cfg.name}: SCHRITT 8A`;
+        timerBadge.textContent = "🔥 160 °C";
+        let bakeProgress = 0;
+        let isPulled = false;
+
+        showMama("👩‍🍳", '"Zieh das Blech bei Goldbraun heraus!"');
+
+        touchScreen.innerHTML = `
+          <div style="font-size: 0.92rem; font-weight: 700;">Zieh das Blech bei Goldbraun heraus!</div>
+          <div class="oven-bake-box" id="bakeStage">
+            <div class="sliding-cookie-tray" id="cookieTray">
+              <div style="width: 90px; height: 9px; background: #a8a29e; border-radius: 5px; border: 2px solid var(--text-dark);"></div>
+              <div class="cookies-tray-grid">
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+                <div class="bake-cookie-mini"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div></div>
+              </div>
+            </div>
+            <div class="hint-arrow-bounce">⬇️ BLECH NACH UNTEN ZIEHEN! ⬇️</div>
+          </div>
+          <div class="generic-meter">
+            <div class="meter-zone-target" style="left: 62%; width: 20%;"></div>
+            <div class="meter-bar-fill" id="cookieBakeFill"></div>
+          </div>
+        `;
+
+        const tray = document.getElementById('cookieTray');
+        const fill = document.getElementById('cookieBakeFill');
+        const minis = document.querySelectorAll('.bake-cookie-mini');
+
+        activeLoop = setInterval(() => {
+          if (isPulled) return;
+          bakeProgress += 1;
+          fill.style.width = `${bakeProgress}%`;
+
+          if (bakeProgress === 25) {
+            minis.forEach(m => m.style.transform = 'scale(1.15, 1.05)');
+          } else if (bakeProgress === 62) {
+            minis.forEach(m => {
+              m.style.background = 'radial-gradient(circle, #fef08a 25%, #d97706 70%, #b45309 100%)';
+              m.style.borderColor = '#78350f';
+            });
+            showMama("💖", '"JETZT ZIEHEN!"');
+          }
+
+          if (bakeProgress >= 100) {
+            clearInterval(activeLoop);
+            isPulled = true;
+            recordScore('step8A', 20);
+            showRating("ZU DURCH!", "bad");
+            setTimeout(prepStep8B, 1200);
+          }
+        }, cfg.bakeLoop8A);
+
+        let isDragging = false;
+        let startY = 0;
+
+        tray.addEventListener('pointerdown', (e) => {
+          if (isPulled) return;
+          isDragging = true;
+          startY = e.clientY || (e.touches && e.touches[0].clientY);
+          tray.style.transition = 'none';
+          tray.setPointerCapture(e.pointerId);
+        });
+
+        tray.addEventListener('pointermove', (e) => {
+          if (!isDragging || isPulled) return;
+          const curY = e.clientY || (e.touches && e.touches[0].clientY);
+          const deltaY = curY - startY;
+
+          if (deltaY > 0) {
+            const newY = Math.min(180, 25 + deltaY);
+            tray.style.top = `${newY}px`;
+
+            if (newY >= 135) {
+              isDragging = false;
+              isPulled = true;
+              clearInterval(activeLoop);
+              tray.style.transition = 'top 0.3s ease-out';
+              tray.style.top = '190px';
+
+              if (bakeProgress >= 62 && bakeProgress <= 82) {
+                recordScore('step8A', 100);
+                showRating("PERFEKT WEICH! ★★★", "perfect");
+              } else {
+                recordScore('step8A', Math.max(20, 60 - (10 * cfg.penaltyFactor)));
+                showRating("GUT! ★★", "good");
+              }
+              setTimeout(prepStep8B, 1200);
+            }
+          }
+        });
+
+        tray.addEventListener('pointerup', () => {
+          if (!isDragging || isPulled) return;
+          isDragging = false;
+          tray.style.transition = 'top 0.2s ease-out';
+          tray.style.top = '25px';
+        });
+      }
+
+      /* ========================================================
+         SCHRITT 8B: NACHZIEHEN & GITTER
+      ======================================================== */
+      function prepStep8B() {
+        const cfg = modeConfigs[currentMode];
+        showStepIntro(
+          "⏳🏁",
+          `Schritt 8B: Nachziehen & Gitter (${cfg.t8B_move}s)`,
+          `Warte die ${cfg.t8B_rest}s Nachziehzeit ab. Danach hast du ${cfg.t8B_move}s Zeit, um alle 6 Cookies aufs Gitter zu ziehen!`,
+          startStep8B
+        );
+      }
+
+      function startStep8B() {
+        const cfg = modeConfigs[currentMode];
+        let restTime = cfg.t8B_rest;
+        let moveTimeLimit = cfg.t8B_move;
+        let cookiesResting = true;
+        let movedCount = 0;
+        let brokenCount = 0;
+
+        stepPill.textContent = `${cfg.name}: SCHRITT 8B`;
+        timerBadge.textContent = `⏳ ${restTime}s RUHE`;
+        timerBadge.className = 'timer-badge warning';
+        showMama("👩‍🍳", '"NICHT berühren, solange sie dampfen!"');
+
+        touchScreen.innerHTML = `
+          <div id="restNotice" style="font-weight: 700; font-size: 0.92rem; color: #b91c1c;">
+            🔥 Noch zu weich! Nachziehen lassen... (<span id="restSecs">${restTime}</span>s)
+          </div>
+          <div style="width: 100%; max-width: 330px; height: 265px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="hot-cooling-pan" id="pan">
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+              <div class="cookie-moveable"><div class="c-drop d1"></div><div class="c-drop d2"></div><div class="c-drop d3"></div><span style="position: absolute; left: 14px;">♨️</span></div>
+            </div>
+            <div class="cooling-wire-rack" id="rack"></div>
+          </div>
+          <div id="subNotice" style="font-weight: 700; font-size: 0.9rem; margin-top: 0.2rem;">Finger weg!</div>
+        `;
+
+        const restNotice = document.getElementById('restNotice');
+        const restSecs = document.getElementById('restSecs');
+        const subNotice = document.getElementById('subNotice');
+        const rack = document.getElementById('rack');
+        const cookies = document.querySelectorAll('.cookie-moveable');
+
+        activeTimer = setInterval(() => {
+          restTime--;
+          if (restTime > 0) {
+            restSecs.textContent = restTime;
+          } else {
+            clearInterval(activeTimer);
+            cookiesResting = false;
+            restNotice.textContent = "✨ Stabil! Schnell alle 6 Cookies aufs Gitter!";
+            restNotice.style.color = '#15803d';
+            subNotice.textContent = `Zieh sie aufs Gitter (0 / 6)!`;
+            document.querySelectorAll('.cookie-moveable span').forEach(s => s.remove());
+
+            startMoveTimer();
+          }
+        }, 1000);
+
+        function startMoveTimer() {
+          timerBadge.textContent = `⏱️ ${moveTimeLimit < 10 ? '0' : ''}${moveTimeLimit}s`;
+          activeTimer = setInterval(() => {
+            moveTimeLimit--;
+            timerBadge.textContent = `⏱️ ${moveTimeLimit < 10 ? '0' : ''}${moveTimeLimit}s`;
+            if (moveTimeLimit <= 3) timerBadge.classList.add('warning');
+            if (moveTimeLimit <= 0) {
+              clearInterval(activeTimer);
+              const score = Math.max(10, Math.round(((movedCount) / 6) * 100 - brokenCount * 25 * cfg.penaltyFactor));
+              recordScore('step8B', score);
+              showFinalGameScreen();
+            }
+          }, 1000);
+        }
+
+        cookies.forEach(cookie => {
+          let isDragging = false;
+          let startX, startY;
+
+          cookie.addEventListener('pointerdown', (e) => {
+            if (cookie.classList.contains('broken')) return;
+
+            if (cookiesResting) {
+              cookie.classList.add('broken');
+              brokenCount++;
+              showRating("ZERBROCHEN! 💔", "bad");
+              showMama("🥺", '"Ich habe gesagt warten!"', true);
+              return;
+            }
+
+            isDragging = true;
+            startX = e.clientX || (e.touches && e.touches[0].clientX);
+            startY = e.clientY || (e.touches && e.touches[0].clientY);
+            cookie.setPointerCapture(e.pointerId);
+            cookie.style.zIndex = '100';
+          });
+
+          cookie.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            const curX = e.clientX || (e.touches && e.touches[0].clientX);
+            const curY = e.clientY || (e.touches && e.touches[0].clientY);
+            cookie.style.transform = `translate(${curX - startX}px, ${curY - startY}px) scale(1.15)`;
+          });
+
+          cookie.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const curX = e.clientX || (e.touches && e.changedTouches[0].clientX);
+            const curY = e.clientY || (e.touches && e.changedTouches[0].clientY);
+            const rackRect = rack.getBoundingClientRect();
+
+            if (curX >= rackRect.left && curX <= rackRect.right && curY >= rackRect.top && curY <= rackRect.bottom) {
+              rack.appendChild(cookie);
+              cookie.style.transform = 'translate(0, 0)';
+              cookie.style.cursor = 'default';
+              cookie.style.pointerEvents = 'none';
+              movedCount++;
+              subNotice.textContent = `Zieh sie aufs Gitter (${movedCount} / 6)`;
+
+              if (movedCount + brokenCount >= 6) {
+                clearInterval(activeTimer);
+                const score = Math.max(15, Math.round(((6 - brokenCount) / 6) * 100));
+                recordScore('step8B', score);
+                showFinalGameScreen();
+              }
+            } else {
+              cookie.style.transform = 'translate(0, 0)';
+              cookie.style.zIndex = '10';
+            }
+          });
+        });
+      }
+
+      /* ========================================================
+         FINALE MIT BEWERTUNGSSYSTEM (F BIS S++)
+      ======================================================== */
+      function showFinalGameScreen() {
+        const scoreValues = Object.values(scores);
+        const totalScore = Math.round(scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length);
+        const cfg = modeConfigs[currentMode];
+
+        let rank = "F";
+        let rankClass = "rank-f";
+        let mamaText = '"Oh weh... da ist einiges schiefgelaufen! Übung macht den Meister!"';
+
+        if (totalScore >= 98) {
+          rank = "S++";
+          rankClass = "rank-splusplus";
+          mamaText = `"UNGLAUBLICH! Ein fehlerfreier Meisterlauf auf ${cfg.name}! GODLIKE!"`;
+        } else if (totalScore >= 93) {
+          rank = "S+";
+          rankClass = "rank-splus";
+          mamaText = '"BETTER THAN MAMA! Absolut meisterhaft gebacken!"';
+        } else if (totalScore >= 88) {
+          rank = "S";
+          rankClass = "rank-s";
+          mamaText = '"WONDERFUL! Ein erstklassiges Meisterwerk ohne Makel!"';
+        } else if (totalScore >= 80) {
+          rank = "A";
+          rankClass = "rank-a";
+          mamaText = '"Großartige Leistung! Die Cookies schmecken fantastisch!"';
+        } else if (totalScore >= 70) {
+          rank = "B";
+          rankClass = "rank-b";
+          mamaText = '"Sehr solide gebacken! Ein paar kleine Fehler!"';
+        } else if (totalScore >= 60) {
+          rank = "C";
+          rankClass = "rank-c";
+          mamaText = '"Ganz passabel, aber die Hektik hat Punkte gekostet!"';
+        } else if (totalScore >= 45) {
+          rank = "D";
+          rankClass = "rank-d";
+          mamaText = '"Knapp bestanden! Mama hilft dir beim nächsten Mal!"';
+        }
+
+        showRating(rank === "S++" || rank === "S+" ? "GODLIKE! ★★★" : "FERTIG! ★", "perfect");
+        showMama("👩‍🍳", mamaText);
+
+        setTimeout(() => {
+          stepPill.textContent = `${cfg.name}: ${totalScore} / 100`;
+          timerBadge.textContent = `RANG: ${rank}`;
+
+          touchScreen.innerHTML = `
+            <div style="font-size: 2.8rem; margin-top: 0.2rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));">
+              🍪✨🌿✨🍪
+            </div>
+            
+            <div class="rank-badge ${rankClass}">
+              ${rank}
+            </div>
+
+            <div style="font-size: 1.15rem; font-weight: 700; color: var(--mama-pink-dark); margin-bottom: 0.2rem;">
+              Modus: ${cfg.name} (${totalScore} %)
+            </div>
+            <p style="font-size: 0.88rem; font-weight: 600; text-align: center; max-width: 320px; line-height: 1.35; margin-bottom: 1rem;">
+              Alle 6 Fudgy-Cookies mit je 3 Chunks sind gebacken und gerettet!
+            </p>
+            <button class="btn-mama btn-green" id="btnPlayAgain">🔄 Anderen Modus wählen</button>
+          `;
+
+          document.getElementById('btnPlayAgain').onclick = showModeSelection;
+        }, 1500);
+      }
+
+      // Startet direkt im Modus-Auswahlmenü
+      showModeSelection();
+    });
+  </script>
+</body>
+</html>
